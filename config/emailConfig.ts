@@ -1,41 +1,24 @@
-
-import nodemailer from "nodemailer";
-import dns from "dns";
-
-dns.setDefaultResultOrder("ipv4first");
-
-import dotenv from 'dotenv'
+import { Resend } from "resend";
+import dotenv from "dotenv";
 
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
+const resend = new Resend(process.env.RESEND_API);
 
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
-
-transporter.verify((error, success) => {
-  if (error) {
-    console.log(" Email server error:", error);
-  } else {
-    console.log(" Email server is ready to send messages");
-  }
-});
-
-export const sendEmail = async (to: string, subject: string, body: string) => {
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
+export const sendEmail = async (
+  to: string,
+  subject: string,
+  body: string
+) => {
+  await resend.emails.send({
+    from: "onboarding@resend.dev",
     to,
     subject,
     html: body,
   });
 };
+
+
 export const sendVerificationToEmail = async (to: string, token: string) => {
  
   const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${token}`;
