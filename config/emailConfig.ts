@@ -11,7 +11,7 @@ export const sendEmail = async (
   body: string
 ) => {
   await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: "BookKart <noreply@kamaljoshi-ai.xyz>",
     to,
     subject,
     html: body,
