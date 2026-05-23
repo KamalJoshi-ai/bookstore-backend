@@ -21,7 +21,7 @@ import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import logger from "./logger";
 import morgan from "morgan"
-
+import { errorMiddleware } from "./middleware/error.middleware";
 dotenv.config();
 
 const app = express();
@@ -102,7 +102,7 @@ app.use("/api/address", userLimiter, addressRoutes);
 app.use("/api/user", userLimiter, userRoutes);
 app.use("/api/order", orderLimiter, orderRoutes);
 app.use("/api/seller", sellerRoutes);
-
+app.use(errorMiddleware)
 
 
 const start = async () => {
