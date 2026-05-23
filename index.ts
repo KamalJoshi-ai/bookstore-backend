@@ -1,4 +1,8 @@
-import express, { Request, Response } from "express";
+import dns from "dns";
+
+dns.setDefaultResultOrder("ipv4first");
+
+import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -17,9 +21,7 @@ import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import logger from "./logger";
 import morgan from "morgan"
-import dns from "dns";
 
-dns.setDefaultResultOrder("ipv4first");
 dotenv.config();
 
 const app = express();
