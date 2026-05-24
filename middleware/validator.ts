@@ -22,13 +22,9 @@ export const validate =
       query: req.query,
     });
 
-    if (!result.success) {
-
-      return res.status(400).json({
-        success: false,
-        errors: result.error.flatten(),
-      });
-    }
+ if (!result.success) {
+  return next(result.error);
+}
 
     if (result.data.body) {
       req.body = result.data.body;

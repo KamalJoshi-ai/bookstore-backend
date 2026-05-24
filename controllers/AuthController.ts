@@ -71,8 +71,15 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     verificationTokenExpires: new Date(Date.now() + VERIFY_TOKEN_TTL_MS),
   });
 
+try {
   await sendVerificationToEmail(user.email, plainToken);
-
+} catch (error) {
+  logger.error("Verification email failed", {
+    error,
+    email: user.email,
+    requestId: req.id,
+  });
+}
   logger.info("User registered successfully", {
     userId: user.id,
     email: user.email,
@@ -168,7 +175,15 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
       user.verificationToken = hashToken(plainToken);
       user.verificationTokenExpires = new Date(Date.now() + VERIFY_TOKEN_TTL_MS);
       await user.save();
-      await sendVerificationToEmail(user.email, plainToken);
+try {
+  await sendVerificationToEmail(user.email, plainToken);
+} catch (error) {
+  logger.error("Verification email failed", {
+    error,
+    email: user.email,
+    requestId: req.id,
+  });
+}
       throw new AppError("Verification link expired. A new verification email has been sent.", 403);
     }
     throw new AppError("Please verify your email first", 403);
@@ -519,7 +534,6 @@ export const resetPassword = asyncHandler(async (req: Request, res: Response) =>
   user.resetPasswordExpires = undefined;
   await user.save();
 
-  clearAuthCookies(res);
   logger.info("Password reset successful", { userId: user.id, requestId: req.id, ip: req.ip });
 
   return response(res, 200, "Password reset successfully");
